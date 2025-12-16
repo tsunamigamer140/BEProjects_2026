@@ -1,0 +1,87 @@
+{% extends "ai_notebook/base_notebook.html" %} {% load static %} 
+{% block title %}My Notebooks{% endblock %} 
+{% block content %}
+<div class="notebook-list-container">
+  <!-- LEFT: Notebook List -->
+  <section class="notebook-sidebar-card">
+    <div class="sidebar-header">
+      <h2>Your notebooks</h2>
+    </div>
+
+    <!-- Notebook search -->
+    <input
+      id="notebook-search"
+      type="text"
+      class="search-input"
+      placeholder="Search notebooks..."
+    />
+
+    <ul class="notebook-list" id="notebook-list">
+      {% for nb in notebooks %}
+      <li class="notebook-item" data-title="{{ nb.title|lower }}">
+        <a
+          href="{% url 'ai_notebook:notebook_detail' nb.pk %}"
+          class="notebook-link"
+        >
+          <div class="notebook-title">{{ nb.title }}</div>
+          <div class="notebook-time">{{ nb.updated_at|date:"M d, H:i" }}</div>
+        </a>
+
+        <!-- Delete Button -->
+        <form
+          method="post"
+          action="{% url 'ai_notebook:notebook_delete' nb.pk %}"
+        >
+          {% csrf_token %}
+          <button
+            class="delete-btn"
+            title="Delete notebook"
+            onclick="return confirm('Delete this notebook?')"
+          >
+            🗑
+          </button>
+        </form>
+      </li>
+      {% empty %}
+      <li class="empty-msg">No notebooks yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- RIGHT: Create Notebook -->
+  <section class="create-notebook-card">
+    <h2>Create new notebook</h2>
+
+    <form method="post" class="create-form">
+      {% csrf_token %}
+      <label class="label">Title</label>
+      {{ form.title }}
+
+      <label class="label">Description</label>
+      {{ form.description }}
+
+      <button type="submit" class="create-btn">Create</button>
+    </form>
+  </section>
+</div>
+
+<!-- Notebook search script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("notebook-search");
+    const items = document.querySelectorAll(".notebook-item");
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+
+      items.forEach((item) => {
+        const title = item.dataset.title || "";
+        item.style.display = title.includes(q) ? "" : "none";
+      });
+    });
+  });
+</script>
+
+{% endblock %}

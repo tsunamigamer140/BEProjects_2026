@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <!-- BRAND: Go to chat if user OR guest -->
+    <a
+      class="navbar-brand fw-bold"
+      href="{% if user.is_authenticated or request.session.is_guest %}
+              {% url 'ai_app:chat' %}
+              {% else %}
+              {% url 'login' %}
+              {% endif %}"
+    >
+      Roadmap AI
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated or request.session.is_guest %}
+
+        <!-- Chat -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ai_app:chat' %}">Chat</a>
+        </li>
+
+        <!-- Notebook App -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ai_notebook:notebook_list' %}">
+            Notebook
+          </a>
+        </li>
+
+        <!-- Profile -->
+        {% if user.is_authenticated and not request.session.is_guest %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ai_app:profile' %}">Profile</a>
+        </li>
+
+        <!-- Logout -->
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{% url 'logout' %}"> Logout </a>
+        </li>
+        {% endif %} {% else %}
+
+        <!-- Login only for non-logged users -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

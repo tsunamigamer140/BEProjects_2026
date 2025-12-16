@@ -1,0 +1,173 @@
+{% load static %}
+{% load tz %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Roadmap AI</title>
+
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      /* ---------------------------- */
+      /*  Modern Dynamic Footer       */
+      /* ---------------------------- */
+      .glass-footer {
+        position: relative;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 25px 0;
+        margin-top: 60px;
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .footer-text {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 16px;
+      }
+
+      .footer-caption {
+        font-size: 13px;
+        color: #555;
+        font-style: italic;
+        margin-top: -4px;
+        opacity: 0.9;
+      }
+
+      /* Subtle gradient glow line */
+      .glass-footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: linear-gradient(90deg, #4f46e5, #06b6d4, #22c55e);
+        opacity: 0.7;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Footer icons */
+      .footer-icon {
+        height: 32px;
+        width: 32px;
+        border-radius: 6px;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+      }
+
+      .footer-icon-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        gap: 4px;
+        color: #2c3e50;
+        font-size: 13px;
+      }
+
+      .footer-icon-link:hover .footer-icon {
+        transform: scale(1.12);
+        opacity: 0.9;
+      }
+
+      .footer-icon-link:hover span {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 600px) {
+        .footer-icon {
+          height: 28px;
+          width: 28px;
+        }
+      }
+    </style>
+
+  </head>
+
+  <body class="bg-light">
+
+    {% include "ai_app/components/navbar.html" %}
+
+    <div class="container py-3">
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- 🌟 Glassmorphic Footer -->
+    <footer class="glass-footer text-center">
+      <div class="container">
+
+        <!-- Title -->
+        <p class="footer-text mb-1">
+          RoadmapAI © {% now "Y" %}
+        </p>
+
+        <p class="footer-caption">
+          “Empowering your journey — one intelligent step at a time.”
+        </p>
+
+        <!-- 📚 High-Quality ML Courses -->
+        <div class="mt-4 mb-2">
+          <h6 class="fw-bold mb-3">Top ML Learning Resources</h6>
+
+          <div class="d-flex justify-content-center gap-4 flex-wrap">
+
+            <!-- DeepLearning.ai -->
+            <a href="https://www.deeplearning.ai" target="_blank" class="footer-icon-link">
+              <img src="https://cdn-icons-png.flaticon.com/512/5969/5969025.png"
+                   class="footer-icon" alt="DeepLearningAI" />
+              <span>DeepLearning.ai</span>
+            </a>
+
+            <!-- Coursera ML -->
+            <a href="https://www.coursera.org/learn/machine-learning" target="_blank" class="footer-icon-link">
+              <img src="https://cdn-icons-png.flaticon.com/512/5968/5968520.png"
+                   class="footer-icon" alt="Coursera" />
+              <span>Coursera ML</span>
+            </a>
+
+            <!-- Kaggle -->
+            <a href="https://www.kaggle.com/learn" target="_blank" class="footer-icon-link">
+              <img src="https://www.kaggle.com/static/images/site-logo.png"
+                   class="footer-icon" alt="Kaggle" />
+              <span>Kaggle Learn</span>
+            </a>
+
+            <!-- YouTube ML -->
+            <a href="https://youtube.com/@freecodecamp" target="_blank" class="footer-icon-link">
+              <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png"
+                   class="footer-icon" alt="YouTube" />
+              <span>YouTube Guides</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 📧 Contact -->
+        <div class="mt-3">
+          <a href="mailto:roadmapai25@gmail.com" class="footer-icon-link">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png"
+                 class="footer-icon" alt="Email" />
+            <span>Contact: roadmapai25@gmail.com</span>
+          </a>
+        </div>
+
+      </div>
+    </footer>
+
+  </body>
+</html>

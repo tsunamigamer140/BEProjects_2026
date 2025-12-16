@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial;
+        background: #f5f7fa;
+        padding: 20px;
+      }
+      .box {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #16a34a;
+      }
+      .footer {
+        font-size: 13px;
+        margin-top: 20px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <img
+        src="cid:{{ logo_cid }}"
+        width="70"
+        style="border-radius: 10px; margin-bottom: 15px"
+      />
+
+      <h2>🎉 Premium Activated!</h2>
+
+      <p>Hello <b>{{ username }}</b>,</p>
+      <p>
+        Your <b>Roadmap AI Premium</b> subscription has been successfully
+        approved!
+      </p>
+
+      <ul>
+        <li>Unlimited chat access</li>
+        <li>Advanced NotebookLM features</li>
+        <li>Document intelligence & export</li>
+        <li>Priority processing</li>
+      </ul>
+
+      <p>Enjoy learning 🚀</p>
+
+      <p class="footer">If you need help, reply to this email.</p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,73 @@
+{% extends "ai_app/base.html" %}
+{% block content %}
+
+<style>
+  .premium-card {
+    border-radius: 18px;
+    background: #ffffff;
+  }
+  .price-box {
+    background: #f1f8ff;
+    border-left: 4px solid #0d6efd;
+    padding: 12px;
+    border-radius: 8px;
+  }
+</style>
+
+<div class="container mt-4">
+  <div class="card shadow premium-card p-4">
+
+    <h3 class="fw-bold text-primary">Upgrade to Premium ✨</h3>
+
+    <p class="mt-2">Unlock unlimited requests + priority AI responses!</p>
+
+    <div class="price-box mt-3">
+      💰 <b>Price:</b> ₹199 (One-Time) <br>
+      📱 <b>Google Pay:</b> 9110868186 <br>
+      ✉ Send screenshot here: <b>kowshikbh18@gmail.com</b>
+    </div>
+
+    {% if already_submitted %}
+      <!-- Already submitted state -->
+      <div class="alert alert-info mt-4">
+        <h5 class="fw-bold">⏳ Payment Submitted</h5>
+        <p>Your screenshot has been uploaded successfully.</p>
+        <p class="mt-1 text-secondary">Please wait for admin approval.</p>
+      </div>
+
+    {% else %}
+      <!-- Upload Form -->
+      <form method="POST" enctype="multipart/form-data" id="paymentForm">
+        {% csrf_token %}
+
+        <label class="form-label mt-3 fw-semibold">Upload Payment Screenshot</label>
+        <input type="file" name="proof" class="form-control" required />
+
+        <button class="btn btn-success w-100 mt-3">Submit</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+      <h4 class="text-success fw-bold">Submitted Successfully 🎉</h4>
+      <p class="mt-2">We received your screenshot! You will get Premium access soon.</p>
+      <button class="btn btn-primary w-100" data-bs-dismiss="modal">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Show popup IF Django messages exist -->
+{% if messages %}
+<script>
+  setTimeout(function () {
+    var modal = new bootstrap.Modal(document.getElementById('successModal'));
+    modal.show();
+  }, 200);
+</script>
+{% endif %}
+
+{% endblock %}

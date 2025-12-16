@@ -1,0 +1,47 @@
+Django==5.2.8
+djangorestframework==3.16.1
+
+
+openai==2.8.1
+voyageai==0.3.5       # If using Voyage embeddings for RAG
+huggingface_hub==1.1.5
+
+# ---- PDF / DOCX / PPTX Export ----
+reportlab==4.4.5
+python-docx==1.2.0
+python-pptx==1.0.2
+xlsxwriter==3.2.9
+
+# ---- PDF Reading (NotebookLM-like Uploads) ----
+PyPDF2==3.0.1
+pdfplumber==0.11.8
+
+# ---- Vector DB ----
+pinecone==8.0.0
+
+# ---- Utilities ----
+requests==2.32.5
+python-dateutil==2.9.0.post0
+pytz==2025.2
+
+# ---- Email / MIME ----
+cryptography==46.0.3
+
+# ---- Required Dependencies ----
+numpy==2.3.5
+pandas==2.3.3
+protobuf==5.29.5
+python-jose==3.5.0      # used in auth or token decode if needed
+tokenizers==0.22.1
+attrs==25.4.0
+jsonpickle==4.1.1
+google-api-core==2.28.1
+googleapis-common-protos==1.70.0
+
+# ---- OPTIONAL (remove if not needed) ----
+PyYAML==6.0.3
+
+gunicorn
+whitenoise
+beautifulsoup4
+lxml

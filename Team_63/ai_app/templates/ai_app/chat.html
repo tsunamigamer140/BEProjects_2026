@@ -1,0 +1,182 @@
+{% extends "ai_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-lg border-0 rounded-4">
+    
+    <!-- HEADER -->
+    <div class="card-header bg-dark text-white rounded-top-4 d-flex justify-content-between align-items-center">
+  
+  <h4 class="fw-bold m-0">Roadmap AI Chat</h4>
+
+  {% if request.user.is_authenticated and request.user.username == "guest_user" %}
+      <span class="badge bg-warning text-dark ms-3">
+          You are logged in as a Guest User —
+          <a href="{% url 'login' %}" class="text-dark fw-bold">Login here</a>
+      </span>
+  {% endif %}
+
+  <div>
+    <button type="button" class="btn btn-sm btn-outline-primary me-2" id="new-chat-btn">New Chat</button>
+    
+    <a href="{% url 'ai_app:export_chat' 'txt' %}" class="btn btn-sm btn-outline-secondary">TXT</a>
+    <a href="{% url 'ai_app:export_chat' 'pdf' %}" class="btn btn-sm btn-outline-secondary">PDF</a>
+    <a href="{% url 'ai_app:export_chat' 'pptx' %}" class="btn btn-sm btn-outline-secondary">PPTX</a>
+    <a href="{% url 'ai_app:export_chat' 'json' %}" class="btn btn-sm btn-outline-secondary">JSON</a>
+  </div>
+</div>
+
+
+    <!-- CHAT WINDOW -->
+    <div class="card-body" id="chat-box" style="height: 520px; overflow-y: auto;">
+      {% for chat in chats %}
+      <div class="mb-4">
+        <div class="user-msg"><b>You:</b> {{ chat.message|escape }}</div>
+        <div class="ai-title"><b>AI:</b></div>
+        <div class="flowchart-container ai-response" data-raw="{{ chat.response|escape }}"></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading" class="text-center py-3" style="display: none;">
+      <img src="https://i.gifer.com/ZZ5H.gif" width="55">
+      <p class="text-muted fw-semibold mt-2">Generating response...</p>
+    </div>
+
+    <!-- INPUT BOX -->
+    <div class="card-footer bg-light">
+      <form id="chat-form">
+        {% csrf_token %}
+        <div class="input-group">
+          <input id="user-input" type="text" class="form-control" placeholder="Ask something..." />
+          <button class="btn btn-primary px-4" type="submit">Send</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+  
+
+</div>
+
+<style>
+  body { background: #f5f7fa; }
+  .flowchart-container { white-space: pre-wrap; }
+  .flow-box {
+    background: #fff; border-radius: 10px; padding: 12px;
+    margin: 15px auto; width: 70%;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    border-left: 5px solid #0d6efd;
+  }
+  .flow-box h4 { text-align: center; font-size: 16px; color: #0d6efd; margin: 0 0 5px; }
+  .flow-box p { font-size: 13px; color: #333; margin: 0; }
+  .flow-connector {
+    width: 3px; height: 30px; background: #0d6efd; margin: 0 auto;
+  }
+  .user-msg { background: #e9f2ff; border-radius: 10px; padding: 10px; display: inline-block; }
+  .ai-title { margin-top: 10px; font-weight: bold; }
+</style>
+
+<script src="{% static 'js/chat.js' %}"></script>
+
+<!-- FLOWCHART SCRIPT -->
+<script>
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function createFlowchartBlocks(text) {
+  const container = document.createElement("div");
+  const lines = text.split("\n").filter(l => l.trim() !== "");
+
+  let dayTitle = "", desc = "";
+
+  lines.forEach(line => {
+    const trimmed = line.trim();
+
+    if (/^Day\s*\d+/i.test(trimmed)) {
+      if (dayTitle !== "") {
+        container.appendChild(makeBox(dayTitle, desc));
+        container.appendChild(makeConnector());
+      }
+      dayTitle = trimmed.replace("->", "→");
+      desc = "";
+    } else {
+      desc += trimmed + " ";
+    }
+  });
+
+  if (dayTitle !== "") {
+    container.appendChild(makeBox(dayTitle, desc));
+  } else {
+    container.innerHTML = `<p>${escapeHtml(text)}</p>`;
+  }
+
+  return container.innerHTML;
+}
+
+function makeBox(title, description) {
+  const box = document.createElement("div");
+  box.className = "flow-box";
+  box.innerHTML = `<h4>${escapeHtml(title)}</h4><p>${escapeHtml(description.trim())}</p>`;
+  return box;
+}
+
+function makeConnector() {
+  const div = document.createElement("div");
+  div.className = "flow-connector";
+  return div;
+}
+
+function applyFlowchartFormatting() {
+  document.querySelectorAll(".ai-response:not([data-formatted])").forEach(block => {
+    const raw = block.dataset.raw || block.textContent.trim();
+    block.innerHTML = createFlowchartBlocks(raw);
+    block.setAttribute("data-formatted", "true");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyFlowchartFormatting();
+
+  const observer = new MutationObserver(applyFlowchartFormatting);
+  observer.observe(document.getElementById("chat-box"), {
+    childList: true,
+    subtree: true
+  });
+});
+</script>
+
+<!-- ============================
+      NEW CHAT + CLEAR CHAT JS
+=============================== -->
+<script>
+document.getElementById("new-chat-btn").onclick = function () {
+    fetch("{% url 'ai_app:new_chat' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "ok") {
+            document.getElementById("chat-box").innerHTML = "";
+        }
+    });
+};
+
+document.getElementById("clear-chat-btn").onclick = function() {
+  fetch("/clear-chat/", { method: "POST" })
+    .then(res => res.json())
+    .then(() => {
+      document.getElementById("chat-box").innerHTML = "";
+    });
+};
+</script>
+
+{% endblock %}

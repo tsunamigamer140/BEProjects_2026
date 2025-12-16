@@ -1,0 +1,171 @@
+{% extends "ai_app/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  .profile-card {
+    background: var(--card-bg, #ffffff);
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all .3s ease;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0d6efd;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #555;
+  }
+
+  .info-value {
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  .stat-box {
+    padding: 15px;
+    background: #eef5ff;
+    border-left: 5px solid #0d6efd;
+    border-radius: 12px;
+    margin-top: 15px;
+  }
+
+  /* Premium Badge */
+  .premium-badge {
+    display: inline-block;
+    background: linear-gradient(45deg, #ffd700, #ffb700);
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    animation: glow 1.6s infinite alternate;
+  }
+
+  @keyframes glow {
+    from { box-shadow: 0 0 8px rgba(255,215,0,0.3); }
+    to   { box-shadow: 0 0 18px rgba(255,215,0,0.8); }
+  }
+
+  /* Feature Card */
+  .feature-box {
+    margin-top: 20px;
+    background: #f6f7f9;
+    padding: 15px 20px;
+    border-radius: 14px;
+    border-left: 4px solid #0d6efd;
+  }
+
+  .premium-coming {
+    background: #0d6efd10;
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 18px;
+    border-left: 4px solid #0d6efd;
+  }
+
+  .premium-btn {
+    margin-top: 20px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+
+</style>
+
+<div class="container mt-5" style="max-width: 700px;">
+  
+  <div class="profile-card">
+
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+      <img src="{% static 'logo.jpg' %}" class="profile-avatar" alt="Profile Logo">
+      <div>
+        <h3 class="fw-bold m-0">My Profile</h3>
+        <small class="text-muted">Account Overview</small>
+      </div>
+    </div>
+
+    <!-- USER DETAILS -->
+    <p><span class="info-label">Username:</span> 
+      <span class="info-value">{{ user.username }}</span>
+    </p>
+
+    <p><span class="info-label">Email:</span> 
+      <span class="info-value">{{ user.email }}</span>
+    </p>
+
+    <!-- API USAGE -->
+    <div class="stat-box">
+      <div class="d-flex justify-content-between">
+        <span class="fw-bold">API Requests Used</span>
+        <span>{{ profile.request_count }} / {{ profile.max_requests }}</span>
+      </div>
+    </div>
+
+    <!-- USER PLAN -->
+    <div class="mt-3">
+
+      {% if subscription and subscription.active %}
+
+        <!-- PREMIUM USER -->
+        <span class="premium-badge">⭐ Premium User</span>
+
+        <div class="premium-coming mt-3">
+          <h6 class="fw-bold">🚀 Premium Benefits</h6>
+          <ul>
+            <li>Unlimited AI Requests</li>
+            <li>Advanced NotebookLM Features</li>
+            <li>Priority Response Engine</li>
+            <li>Faster AI Generation</li>
+            <li>Premium Roadmap Templates</li>
+          </ul>
+          <p class="m-0"><em>More Premium features are coming soon…</em></p>
+        </div>
+
+        <!-- DISABLE UPGRADE BUTTON -->
+        <button class="btn btn-secondary w-100 premium-btn" disabled>
+          Already Premium
+        </button>
+
+      {% else %}
+
+        <!-- FREE USER -->
+        <span class="badge bg-warning text-dark px-3 py-2">Free User</span>
+
+        <div class="feature-box">
+          <h6 class="fw-bold">✨ Your Plan Includes:</h6>
+          <ul>
+            <li>Daily Roadmap AI Access</li>
+            <li>NotebookLM Mini (Basic)</li>
+            <li>Limited API Requests</li>
+          </ul>
+        </div>
+
+        <a href="{% url 'ai_app:subscription' %}" 
+           class="btn btn-primary w-100 premium-btn">
+          Upgrade to Premium
+        </a>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

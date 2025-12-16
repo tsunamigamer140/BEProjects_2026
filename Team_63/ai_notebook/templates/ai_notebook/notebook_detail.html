@@ -1,0 +1,206 @@
+{# ai_notebook/templates/ai_notebook/notebook_detail.html #}
+{% extends "ai_notebook/base_notebook.html" %}
+{% load static %}
+
+{% block title %}{{ notebook.title }} | AI Notebook{% endblock %}
+
+{% block content %}
+
+<div class="layout">
+
+  <!-- LEFT PANEL: SOURCES -->
+  <section class="sidebar">
+
+    <!-- Header with back + delete -->
+    <div class="detail-header">
+      <div class="detail-header-top">
+        <a href="{% url 'ai_notebook:notebook_list' %}" class="back-link">
+          ← All notebooks
+        </a>
+
+        <form method="post"
+              action="{% url 'ai_notebook:notebook_delete' notebook.pk %}"
+              onsubmit="return confirm('Delete this notebook and its chat history?');">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger">
+            🗑
+          </button>
+        </form>
+      </div>
+
+      <h2 class="mb-0">{{ notebook.title }}</h2>
+      <p class="note-desc">{{ notebook.description }}</p>
+    </div>
+
+    <!-- Sources + search -->
+    <div class="sources-header-row">
+      <h3>Sources</h3>
+      <input
+        id="source-search"
+        type="text"
+        class="search-input search-input-sm"
+        placeholder="Search sources..."
+      />
+    </div>
+
+    <ul class="source-list" id="source-list">
+      {% for src in sources %}
+      <li class="mb-2 source-item">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong>
+              {% if src.source_type == 'file' %}
+                📄
+              {% elif src.source_type == 'url' %}
+                🔗
+              {% else %}
+                📝
+              {% endif %}
+              {{ src.title }}
+            </strong>
+            <small class="text-muted"> • {{ src.get_source_type_display }}</small>
+          </div>
+
+          <!-- Delete source -->
+          <form method="post"
+                action="{% url 'ai_notebook:source_delete' src.pk %}"
+                onsubmit="return confirm('Delete this source?');">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-link text-danger p-0">Remove</button>
+          </form>
+        </div>
+
+        <p class="source-snippet mb-1">
+          {{ src.content|default:"(no extracted text yet)"|truncatechars:120 }}
+        </p>
+
+        {% if src.source_type == "url" and src.url %}
+          <a href="{{ src.url }}" target="_blank" class="small">Open link ↗</a>
+        {% elif src.source_type == "file" and src.file %}
+          <a href="{{ src.file.url }}" target="_blank" class="small">Open file ↗</a>
+        {% endif %}
+      </li>
+      {% empty %}
+      <li>No sources yet.</li>
+      {% endfor %}
+    </ul>
+
+    <hr>
+
+    <!-- Add Source -->
+    <h3>Add Source</h3>
+
+    <form method="post" enctype="multipart/form-data" class="mt-2">
+      {% csrf_token %}
+
+      <!-- Title -->
+      <label class="fw-bold">Title</label>
+      {{ source_form.title }}
+
+      <!-- Type -->
+      <label class="fw-bold mt-2">Source Type</label>
+      {{ source_form.source_type }}
+
+      <!-- TEXT BLOCK -->
+      <div id="text-input" class="mt-2">
+        <label class="fw-bold">Paste Text</label>
+        {{ source_form.content }}
+      </div>
+
+      <!-- URL BLOCK -->
+      <div id="url-input" class="mt-2" style="display:none;">
+        <label class="fw-bold">Paste URL</label>
+        {{ source_form.url }}
+      </div>
+
+      <!-- FILE BLOCK -->
+      <div id="file-input" class="mt-2" style="display:none;">
+        <label class="fw-bold">Upload File</label>
+        {{ source_form.file }}
+      </div>
+
+      <button name="add_source" class="btn btn-primary btn-sm mt-3">
+        + Add Source
+      </button>
+    </form>
+
+  </section>
+
+
+  <!-- RIGHT PANEL: CHAT -->
+  <section class="content chat-section">
+
+    <h2>Chat about this notebook</h2>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+      {% for msg in messages %}
+      <div class="chat-message {{ msg.role }}">
+        <div class="chat-bubble">
+          <p>{{ msg.content|linebreaksbr }}</p>
+          <small>{{ msg.created_at|date:"M d, H:i" }}</small>
+        </div>
+      </div>
+      {% empty %}
+      <p class="empty-chat">Start a conversation by asking a question.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Chat Input -->
+    <form method="post" class="chat-form mt-3">
+      {% csrf_token %}
+      {{ chat_form.as_p }}
+      <button name="send_message" class="btn btn-success">
+        Send
+      </button>
+      <a href="{% url 'ai_notebook:clear_notebook_chat' notebook.pk %}"
+   class="btn btn-danger ms-2"
+   onclick="return confirm('Clear the entire chat for this notebook?');">
+   Clear Chat
+</a>
+
+    </form>
+
+  </section>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // --- toggle source input fields ---
+    const typeField = document.querySelector("#id_source_type");
+    const textBlock = document.querySelector("#text-input");
+    const urlBlock = document.querySelector("#url-input");
+    const fileBlock = document.querySelector("#file-input");
+
+    function toggleInputs() {
+      if (!typeField) return;
+      const t = typeField.value;
+      textBlock.style.display = (t === "text") ? "block" : "none";
+      urlBlock.style.display = (t === "url") ? "block" : "none";
+      fileBlock.style.display = (t === "file") ? "block" : "none";
+    }
+
+    if (typeField) {
+      typeField.addEventListener("change", toggleInputs);
+      toggleInputs();
+    }
+
+    // --- sidebar source search ---
+    const sourceSearch = document.getElementById("source-search");
+    const sourceItems = document.querySelectorAll(".source-item");
+
+    if (sourceSearch) {
+      sourceSearch.addEventListener("input", () => {
+        const q = sourceSearch.value.toLowerCase();
+
+        sourceItems.forEach((item) => {
+          const text = item.textContent.toLowerCase();
+          item.style.display = text.includes(q) ? "" : "none";
+        });
+      });
+    }
+  });
+</script>
+
+{% endblock %}

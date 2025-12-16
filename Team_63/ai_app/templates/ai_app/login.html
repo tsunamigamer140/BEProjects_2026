@@ -1,0 +1,161 @@
+{% extends "ai_app/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  /* Toast Container */
+  #toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+  }
+
+  .toast-alert {
+    min-width: 260px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .toast-success { background: #16a34a; }
+  .toast-error { background: #dc2626; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .login-logo {
+    width: 110px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  /* OAuth Buttons */
+  .oauth-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: white;
+    font-weight: 600;
+    color: #444;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.2s;
+  }
+  .oauth-btn:hover {
+    background: #f8f9fa;
+  }
+  .oauth-btn img {
+    width: 20px;
+  }
+</style>
+
+<div id="toast-container"></div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-body p-4 text-center">
+
+          <!-- 🌟 LOGO -->
+          <img src="{% static 'logo.jpg' %}" alt="Roadmap AI Logo" class="login-logo">
+
+          <h3 class="mb-2 fw-bold">Welcome Back</h3>
+          <p class="text-muted">Login to continue</p>
+
+          <form id="loginForm">
+            {% csrf_token %}
+
+            <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Username</label>
+              <input id="username" type="text" name="username"
+                     class="form-control form-control-lg"
+                     placeholder="Enter username" required>
+            </div>
+
+            <div class="mb-3 text-start">
+              <label class="form-label fw-semibold">Password</label>
+              <input id="password" type="password" name="password"
+                     class="form-control form-control-lg"
+                     placeholder="Enter password" required>
+            </div>
+
+            <button id="loginBtn" class="btn btn-primary w-100 btn-lg mt-2">
+              Login
+            </button>
+
+            <a href="{% url 'ai_app:guest_login' %}"
+               class="btn btn-outline-secondary w-100 mt-3">
+              Continue as Guest
+            </a>
+
+            <p class="text-center mt-3 text-muted">
+              Don't have an account?
+              <a href="{% url 'register' %}" class="fw-bold">Register</a>
+            </p>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast-alert toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.transition = "0.4s";
+      toast.style.opacity = "0";
+      toast.style.transform = "translateX(40px)";
+      setTimeout(() => toast.remove(), 400);
+    }, 2000);
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const csrf = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+    const res = await fetch("", {
+      method: "POST",
+      headers: { "X-CSRFToken": csrf },
+      body: new FormData(e.target),
+    });
+
+    const text = await res.text();
+
+    if (text.includes("Invalid credentials")) {
+      showToast("Invalid username or password!", "error");
+      return;
+    }
+
+    if (text.includes("chat")) {
+      showToast("Login successful!", "success");
+
+      setTimeout(() => {
+        window.location.href = "{% url 'ai_app:chat' %}";
+      }, 800);
+    }
+  });
+</script>
+
+{% endblock %}

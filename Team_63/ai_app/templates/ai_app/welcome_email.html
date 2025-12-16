@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+      }
+      .email-box {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+      }
+      h2 {
+        color: #222;
+      }
+      .section-title {
+        margin-top: 25px;
+        font-weight: bold;
+        color: #0d6efd;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 13px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-box">
+      <img src="cid:roadmaplogo" width="120" style="border-radius: 8px" />
+
+      <h2>Welcome {{ username }} 👋</h2>
+
+      <p>
+        Thank you for creating an account with <b>Roadmap AI</b> and
+        <b>NotebookLM Mini</b>. We’re excited to have you onboard!
+      </p>
+
+      <h3 class="section-title">🚀 What We Offer</h3>
+      <ul>
+        <li>AI Roadmap Generator</li>
+        <li>DSA & coding guidance</li>
+        <li>Smart learning suggestions</li>
+        <li>Full NotebookLM-like document intelligence</li>
+      </ul>
+
+      <h3 class="section-title">📘 NotebookLM Mini — Use Cases</h3>
+      <ul>
+        <li>Summarize your PDF, DOCX, notes</li>
+        <li>Ask questions on your documents</li>
+        <li>Extract key points / insights</li>
+        <li>Organize study materials automatically</li>
+      </ul>
+
+      <h3 class="section-title">🤖 Roadmap AI Chatbot — Use Cases</h3>
+      <ul>
+        <li>Generate skill-learning roadmaps</li>
+        <li>Prepare for job interviews</li>
+        <li>Get project ideas & explanations</li>
+        <li>Learn topics step-by-step with flowcharts</li>
+      </ul>
+
+      <h3 class="section-title">👨‍💻 Contributors</h3>
+      <p>
+        • <b>kowshikbh18@gmail.com</b><br />
+        • <b>mdga22cs@cmrit.ac.in</b><br />
+        • <b>mahg22cs@cmrit.ac.in</b>
+      </p>
+
+      <p class="footer">
+        Thanks for joining us! Need help? Just reply to this email.
+      </p>
+    </div>
+  </body>
+</html>

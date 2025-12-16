@@ -1,0 +1,32 @@
+body {
+  background: #f3f5f9;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+input,
+button {
+  border-radius: 10px !important;
+}
+
+#chat-box {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#chat-box p {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.navbar-brand {
+  font-size: 1.4rem;
+}
+
+.btn-primary,
+.btn-success {
+  border-radius: 12px !important;
+}

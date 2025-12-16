@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial;
+        background: #f5f7fa;
+        padding: 20px;
+      }
+      .box {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #dc2626;
+      }
+      .footer {
+        font-size: 13px;
+        margin-top: 20px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <img
+        src="cid:{{ logo_cid }}"
+        width="70"
+        style="border-radius: 10px; margin-bottom: 15px"
+      />
+
+      <h2>❌ Payment Rejected</h2>
+
+      <p>Hello <b>{{ username }}</b>,</p>
+
+      <p>Your premium payment request could not be verified.</p>
+
+      <p>Please upload a valid screenshot with correct transaction ID.</p>
+
+      <p class="footer">Need help? Reply to this email.</p>
+    </div>
+  </body>
+</html>
